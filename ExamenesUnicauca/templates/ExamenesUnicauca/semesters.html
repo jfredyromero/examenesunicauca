@@ -1,0 +1,64 @@
+{% extends "ExamenesUnicauca/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <h2>{{ career }}</h2>
+    <hr>
+    <div class="row container-fluid position-relative">
+        <div class="col-4 container position-relative">
+            <div class="btn-group-lg" role="group" id="semesters">
+                <button class="btn-semester btn btn-dark btn-block btn-lg d-flex justify-content-between align-items-center" type="submit" data-semester="1">
+                    <h4>Semestre 1</h4>
+                    <span class="badge badge-info badge-pill"><h5>{{ courses.0 }}</h5></span>
+                </button>
+                <button class="btn-semester btn btn-dark btn-block btn-lg d-flex justify-content-between align-items-center" type="submit" data-semester="2">
+                    <h4>Semestre 2</h4>
+                    <span class="badge badge-info badge-pill"><h5>{{ courses.1 }}</h5></span>
+                </button>
+                <button class="btn-semester btn btn-dark btn-block btn-lg d-flex justify-content-between align-items-center" type="submit" data-semester="3">
+                    <h4>Semestre 3</h4>
+                    <span class="badge badge-info badge-pill"><h5>{{ courses.2 }}</h5></span>
+                </button>
+                <button class="btn-semester btn btn-dark btn-block btn-lg d-flex justify-content-between align-items-center" type="submit" data-semester="4">
+                    <h4>Semestre 4</h4>
+                    <span class="badge badge-info badge-pill"><h5>{{ courses.3 }}</h5></span>
+                </button>
+                <button class="btn-semester btn btn-dark btn-block btn-lg d-flex justify-content-between align-items-center" type="submit" data-semester="5">
+                    <h4>Semestre 5</h4>
+                    <span class="badge badge-info badge-pill"><h5>{{ courses.4 }}</h5></span>
+                </button>
+                <button class="btn-semester btn btn-dark btn-block btn-lg d-flex justify-content-between align-items-center" type="submit" data-semester="6">
+                    <h4>Semestre 6</h4>
+                    <span class="badge badge-info badge-pill"><h5>{{ courses.5 }}</h5></span>
+                </button>
+                <button class="btn-semester btn btn-dark btn-block btn-lg d-flex justify-content-between align-items-center" type="submit" data-semester="7">
+                    <h4>Semestre 7</h4>
+                    <span class="badge badge-info badge-pill"><h5>{{ courses.6 }}</h5></span>
+                </button>
+                <button class="btn-semester btn btn-dark btn-block btn-lg d-flex justify-content-between align-items-center" type="submit" data-semester="8">
+                    <h4>Semestre 8</h4>
+                    <span class="badge badge-info badge-pill"><h5>{{ courses.7 }}</h5></span>
+                </button>
+                <button class="btn-semester btn btn-dark btn-block btn-lg d-flex justify-content-between align-items-center" type="submit" data-semester="9">
+                    <h4>Semestre 9</h4>
+                    <span class="badge badge-info badge-pill"><h5>{{ courses.8 }}</h5></span>
+                </button>
+                <button class="btn-semester btn btn-dark btn-block btn-lg d-flex justify-content-between align-items-center" type="submit" data-semester="10">
+                    <h4>Semestre 10</h4>
+                    <span class="badge badge-info badge-pill"><h5>{{ courses.9 }}</h5></span>
+                </button>
+            </div>
+        </div>
+        <div class="col-4 container-fluid position-relative courses-container">
+            <div class="btn-group-lg" role="group" id="courses">
+            </div>
+        </div>
+        <div class="col-4 container-fluid position-relative teachers-container">
+            <div class="btn-group-lg" role="group" id="teachers">
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script src="{% static 'ExamenesUnicauca/js/semesters.js' %}"></script>
+{% endblock %}

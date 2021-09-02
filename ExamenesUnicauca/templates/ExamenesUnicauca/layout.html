@@ -1,0 +1,174 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.0/viewer.css" integrity="sha512-tYobxYoCZxl0CejYCA8c4w8HRcg3wRoKaGYIQ/2ILqyB4vRqMd/Jmehxod1dQJ2uE/9rDY9pG48isM8SHEAwDQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.0/viewer.min.css" integrity="sha512-Fc9/kKwzRba1WYBdNR1vJtOvd7Pl9pWy7CSkhQmyci0PSgUqJfx6I+vZfhy1mXwRGl9iHDN70JAwkPsor9guuA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link href="{% static 'ExamenesUnicauca/css/normalize.css' %}" rel="stylesheet">
+        <link href="{% static 'ExamenesUnicauca/css/styles.css' %}" rel="stylesheet">
+        <link rel="shortcut icon" type="image/png" href="{% static 'ExamenesUnicauca/img/favicon.png' %}">
+        <title>{% block title %} Examenes Unicauca {% endblock %}</title>
+    </head>
+    <body background="{% static 'ExamenesUnicauca/img/background.jpg' %}"> 
+        <div class="header">
+            <div class="logo">
+                <a href="{% url 'index' %}">
+                    <img src="{% static 'ExamenesUnicauca/img/logo.png' %}" alt="logo">
+                </a>
+            </div>
+            <div class="navigation">
+                <div class="nav-links" id="nav-options">
+                    <a class="nav-link" href="{% url 'index' %}">
+                        Inicio
+                    </a>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Carreras
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'career_view' 'Ingeniería Electrónica' %}">Ingeniería Electrónica</a>
+                    </div>
+                    <a class="nav-link" href="http://www.unicauca.edu.co/">
+                        Unicauca Web
+                    </a>
+                    <a class="nav-link" href="https://simca.unicauca.edu.co/">
+                        SIMCA
+                    </a>
+                </div>
+                <div class="nav-links" id="nav-profile">
+                    {% if user.is_authenticated %}
+                        <a class="nav-link" href="{% url 'register' %}">
+                            <strong>
+                                {{ user.username | capfirst }}
+                            </strong>
+                        </a>
+                        <a class="nav-link" href="{% url 'moderate' %}">
+                            Moderar
+                        </a>
+                        <a class="nav-link" href="{% url 'logout' %}">
+                            Salir
+                        </a>
+                    {% else %}
+                        <a class="nav-link" href="{% url 'submit_contribution' %}">
+                            Aporta
+                        </a>
+                        <a class="nav-link" href="{% url 'login' %}">
+                            Ingresa
+                        </a>
+                    {% endif %}
+                </div>
+                <button class="hamburger" id="hamburger">
+                    <span class="top-line"></span>
+                    <span class="middle-line"></span>
+                    <span class="bottom-line"></span>
+                </button>
+            </div>
+            <div class="side-menu" id="side-menu">
+                <ul class="side-menu-options">
+                    <a href="{% url 'index' %}">
+                        <img src="{% static 'ExamenesUnicauca/img/logo.png' %}" height="10vh" alt="logotipo">
+                    </a>
+                    {% if user.is_authenticated %}
+                        <li class="list-item">
+                            <a href="{% url 'register' %}">
+                                <strong>
+                                    {{ user.username | capfirst }}
+                                </strong>
+                            </a>
+                            <span></span>
+                        </li>
+                        <li class="list-item">
+                            <a href="{% url 'moderate' %}">
+                                Moderar
+                            </a>
+                            <span></span>
+                        </li>
+                        <li class="list-item">
+                            <a href="{% url 'logout' %}">
+                                Salir
+                            </a>
+                            <span></span>
+                        </li>
+                    {% else %}
+                        <li class="list-item">
+                            <a href="{% url 'submit_contribution' %}">
+                                Aporta
+                            </a>
+                            <span></span>
+                        </li>
+                        <li class="list-item">
+                            <a href="{% url 'login' %}">
+                                Ingresa
+                            </a>
+                            <span></span>
+                        </li>
+                    {% endif %}
+                    <li class="list-item">
+                        <a href="{% url 'index' %}">
+                            Inicio
+                        </a>
+                        <span></span>
+                    </li>
+                    <li class="list-item">
+                        Carreras
+                        <span></span>
+                        <ul>
+                            <li class="sublist-item">
+                                <a href="{% url 'career_view' 'Ingeniería Electrónica' %}">
+                                    Ingeniería Electrónica
+                                </a>
+                                <span></span>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="list-item">
+                        <a href="http://www.unicauca.edu.co/">
+                            Unicauca Web
+                        </a>
+                        <span></span>
+                    </li>
+                    <li class="list-item">
+                        <a href="https://simca.unicauca.edu.co/">
+                            SIMCA
+                        </a>
+                        <span></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="empty-panel" id="empty-panel">
+                <!-- No borrar, es el div que opaca la pantalla -->
+            </div>
+        </div>
+        <div id="home">
+            <div id="page-content">
+                {% block body %}
+                {% endblock %}
+            </div>
+            <div id="footer">
+                <div id="footer-logo">
+                    <a href="{% url 'index' %}">
+                        <img src="{% static 'ExamenesUnicauca/img/logo.png' %}" alt="Logo" height="100px">
+                    </a>
+                </div>
+                <div id="emblema">
+                    <h4>Una página web de estudiantes y para estudiantes...</h4>
+                    <p>examenesunicauca@gmail.com</p>
+                </div>
+            </div>
+            <div id="page-scripts">
+                <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+                <script src="{% static 'ExamenesUnicauca/js/main.js' %}"></script>
+                {% block script %}
+                {% endblock %}
+            </div>
+        </div>
+    </body>
+</html>

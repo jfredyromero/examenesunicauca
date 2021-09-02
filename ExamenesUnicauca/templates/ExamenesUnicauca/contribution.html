@@ -1,0 +1,149 @@
+{% extends "ExamenesUnicauca/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <h2>{{ contribution.category }}: {{ contribution.course.name }}</h2>
+    <hr>
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                {% if contribution.category == "Apuntes" %}
+                    <h4>Temática:</h4>
+                    <p>{{ contribution.apuntes.topic }}</p>
+                {% endif %}
+                <h4>Profesor:</h4>
+                <p>{{ contribution.teacher.first_name }} {{ contribution.teacher.last_name }}</p>
+                <h4>Año:</h4>
+                <p>{{ contribution.year }}.{{ contribution.semester_of_year }}</p>
+                <h4>Descripción:</h4>
+                {% if contribution.description %}
+                    <p>{{ contribution.description }}</p>
+                {% else %}
+                    <p>No hay descripción.</p>                    
+                {% endif %}
+                {% if contribution.category == "Solucionario" %}
+                    <h4>Parcial Solucionado:</h4>
+                    <a href="{% url 'contribution_view' contribution.contribution_of_solution.all.0.id %}">
+                        <p>Semestre {{ contribution.contribution_of_solution.all.0.course.semester }} - {{ contribution.contribution_of_solution.all.0.course.name }} - {{ contribution.contribution_of_solution.all.0.teacher.first_name }} {{ contribution.contribution_of_solution.all.0.teacher.last_name }} - {{ contribution.contribution_of_solution.all.0.year }}.{{ contribution.contribution_of_solution.all.0.semester_of_year }} </p>
+                    </a>
+                {% endif %}
+            </div>
+            <div class="col-6">
+                <h4>Carrera:</h4>
+                <p>{{ contribution.course.career.name }}</p>
+                <h4>Corte:</h4>
+                {% if contribution.part == 1 %}
+                    <p>Primero</p>
+                {% elif contribution.part == 2 %}
+                    <p>Segundo</p>
+                {% else %}
+                    <p>Tercero</p>
+                {% endif %}
+                <h4>Fecha de publicación:</h4>
+                <p>{{ contribution.timestamp }}</p>
+            </div>
+        </div>
+        {% if not contribution.status and user.is_authenticated %}
+            <h4>Moderar:</h4>
+            <div class="container text-center">
+                <button type="button" class="btn btn-success" data-contribution="{{ contribution.id }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" class="bi bi-check" viewBox="0 0 16 16">
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"></path>
+                    </svg>
+                    Aceptar
+                </button>
+                <a href="{% url 'edit_contribution' contribution.id %}" id="edit-button">
+                <button type="button" class="btn btn-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                        <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+                    </svg>
+                    Editar
+                </button>
+                </a>
+                <button type="button" class="btn btn-danger" data-contribution="{{ contribution.id }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" class="bi bi-check" viewBox="0 0 16 16">
+                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></path>
+                    </svg>
+                    Rechazar
+                </button>
+            </div>
+        {% endif %}
+        <br>
+        <div id="images-to-view">
+            {% for img in contribution.images.all %}
+                <img width="200px" src="{{ img.img.url }}" data-original="{{ img.img.url }}" class="img-fluid" alt="{{ contribution.course.career.name }} / {{ contribution.course.name }} / {{ contribution.teacher.first_name }} {{ contribution.teacher.last_name }} / {{ contribution.year }}.{{ contribution.semester_of_year }}">
+            {% endfor %}
+        </div>
+        {% for solution in contribution.solution.all %}
+            {% if solution.status %}
+                <div>
+                    <hr>
+                    <h3>¿Quieres ver un solucionario? <a href="{% url 'contribution_view' solution.id %}">¡Haz click aquí!</a></h3>
+                </div>
+            {% endif %}
+        {% endfor %}
+        <br>
+        <br>
+    </div>
+    <hr>
+    {% if contribution.status %}
+        <!-- Comments section -->
+        <div id="comments-section">
+            <div id="add-comment">
+                <h2>Agrega un comentario. Es totalmente anónimo.</h2>
+                <form action="{% url 'add_comment' %}" method="post">
+                    {% csrf_token %}
+                    <p class="error_message">
+                    {{ comments_message }}
+                    {{ form.content.errors }}
+                    </p>
+                    <textarea name="content" style="width:100%; height:80px;" placeholder="Agrega un comentario..." required></textarea>
+                    <input type="hidden" name="contribution_commented" value="{{ contribution.id }}">
+                    <button class="btn btn-primary btn-lg float-right" type="submit">Comentar</button>
+                </form>
+            </div>
+            <br>
+            <br>
+            <br>
+            <hr>
+            {% if contribution.comments.all %}
+                <div id="display-comment">
+                    <h2>Comments <small class="float-right"> {{ contribution.comments.all|length }} Comments</small></h2>
+                    {% for comment in contribution.comments.all %}
+                    <div class="comment">
+                        <div class="media float-right">
+                            <p><small>{{ comment.timestamp }}</small></p>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading user-name">Anónimo</h4>
+                            {{ comment.content }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <h2>No hay comentarios...</h2>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}
+{% block script %}
+    <script src="{% static 'ExamenesUnicauca/js/moderate.js' %}"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            var galley = document.getElementById('images-to-view');
+            var viewer = new Viewer(galley, {
+                url: 'data-original',
+                title: function (image) {
+                    return image.alt + ' (' + (this.index + 1) + '/' + this.length + ')';
+                },
+            });
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.0/viewer.min.js" integrity="sha512-11Ip09cPitpyapqTnApnxupcQdX1fzWkRZZoEU+I0+IxrVxORGThseKL6O2s+qbBN7aTw7SDbk+rWFZ/LVmB7g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.0/viewer.common.js" integrity="sha512-O69p3q0WJ5UlMCPGXfj8vc9yRDvcR2Z2cn+xUk9mm+AL9alkNlGBYKnKTncFCjYiWWTWl9s8hKZSsU2YyWmQPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.0/viewer.common.min.js" integrity="sha512-VHymz1kYQeBEmHdpIy9DXl/y6t7bJY7dihlp2/YqR3LW5EqkA9iziJ+mWAEwp9wNJnPxPO8qRQM87ecycYjRXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.0/viewer.esm.js" integrity="sha512-PJohvI1x1TBOPWTjguiN3J7oGHutVAR5tmiaHnx6KZPB8G+TG6vZCNCroYjafDaoagaInSskSJdLWmt/Eyr/Gw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.0/viewer.esm.min.js" integrity="sha512-E2bmq5eKQanOPf77PCTbEU7XC8e5GXWmGecPupqNHRzSht21qeF7yL6CXa+195jp1OpNdBLYM+qu/bRVG+TXMA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.0/viewer.js" integrity="sha512-psAniLUS9J4A5KNQiSt9XMNeVSMx/Rz89vQJqeYlOIiTR5WK8zU/8EPwAKt+522eeV04QUzIwX5VrAW10FbdeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock %}

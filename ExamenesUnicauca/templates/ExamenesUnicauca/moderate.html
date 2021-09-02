@@ -1,0 +1,84 @@
+{% extends "ExamenesUnicauca/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div class="row">
+    <div class="col-6">
+        <h2>{{ title }}</h2>
+    </div>
+    <div class="col-6">
+        <form style="float: right;" class="form-inline" action="{% url 'search' 'moderate' %}" method="get">
+            <input class="form-control form-control-lg mr-sm-2" type="search" placeholder="Buscar" name="query" aria-label="Search">
+            <button class="btn btn-primary btn-lg" type="submit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                </svg>
+                Buscar
+            </button>
+        </form>
+    </div>
+</div>
+    <hr>
+        {% for contribution in contributions %}
+            {% if contribution.status == False %}
+                <a href="{% url 'contribution_view' contribution.id %}" class="contribution-card" style="color:black;">
+                    <div class="card mb-3 container" style="max-width: 650px;">
+                        <div class="row no-gutters">
+                            <div class="col-md-4">
+                                <img src="{{ contribution.images.all.0.img.url }}" class="card-img" alt="{{ contribution.images.all.0.img.url }}" height="180px" style="margin:20px 5px;">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h4 class="card-title">{{ contribution.category}}: {{ contribution.course.name }}</h4>
+                                    <p class="card-text">{{ contribution.teacher.first_name }} {{ contribution.teacher.last_name }}</p>
+                                    <p class="card-text">{{ contribution.year }}.{{ contribution.semester_of_year }}</p>
+                                    {% if contribution.category == "Apuntes" %}
+                                        <p>{{ contribution.apuntes.topic }}</p>
+                                    {% else %}
+                                        {% if contribution.part == 1 %}
+                                            <p>Primer Corte</p>
+                                        {% elif contribution.part == 2 %}
+                                            <p>Segundo Corte</p>
+                                        {% else %}
+                                            <p>Tercer Corte</p>
+                                        {% endif %}
+                                    {% endif %}
+                                    <p class="card-text"><small class="text-muted">{{ contribution.timestamp | timesince }} ago</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            {% endif %}
+        {% empty %}
+            <div class="alert alert-warning mx-3" role="alert">
+                No Contributions to Moderate.
+            </div>
+        {% endfor %}
+        <!-- Pagination -->
+        <br>
+        <div id="pagination">
+          {% if contributions.has_other_pages %}
+            <ul class="pagination justify-content-center">
+              {% if contributions.has_previous %}
+                <li class="page-item"><a class="page-link" href="?pag={{ contributions.previous_page_number }}">Previous</a></li>
+              {% else %}
+                <li class="page-item disabled"><span class="page-link">Previous</span></li>
+              {% endif %}
+              {% for i in contributions.paginator.page_range %}
+                {% if contributions.number == i %}
+                  <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+                {% else %}
+                  <li class="page-item"><a class="page-link" href="?pag={{ i }}">{{ i }}</a></li>
+                {% endif %}
+              {% endfor %}
+              {% if contributions.has_next %}
+                <li class="page-item"><a class="page-link" href="?pag={{ contributions.next_page_number }}">Next</a></li>
+              {% else %}
+                <li class="page-item disabled"><span class="page-link">Next</span></li>
+              {% endif %}
+            </ul>
+          {% endif %}
+        </div>
+
+{% endblock %}
