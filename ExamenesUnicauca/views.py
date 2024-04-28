@@ -777,6 +777,9 @@ def contribution_view(request, contribution_id):
 def career_view(request, career_name):
     career = Career.objects.get(name=career_name)
     courses = Course.objects.filter(career=career)
+    for course in courses:
+        if len(course.contributions_of_course.filter(status=True)) == 0: 
+            courses = courses.exclude(pk=course.id)
     courses_per_semester = []
     courses_per_semester.append(len(courses.filter(semester=1)))
     courses_per_semester.append(len(courses.filter(semester=2)))
