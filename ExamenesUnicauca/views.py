@@ -227,6 +227,7 @@ def submit_contribution(request):
                     "teachers": teachers,
                     "careers": careers,
                     "courses": courses,
+                    "semesters": range(1, 11),
                     "message": "Hubo un error al llenar el formulario. Por favor completalo nuevamente."
                 })
         elif request.POST["category"] == "Solucionario":
@@ -306,6 +307,7 @@ def submit_contribution(request):
                     "teachers": teachers,
                     "careers": careers,
                     "courses": courses,
+                    "semesters": range(1, 11),
                     "message": "Hubo un error al llenar el formulario. Por favor completalo nuevamente."
                 })
         else:
@@ -367,13 +369,15 @@ def submit_contribution(request):
                     "teachers": teachers,
                     "careers": careers,
                     "courses": courses,
+                    "semesters": range(1, 11),
                     "message": "Hubo un error al llenar el formulario. Por favor completalo nuevamente."
                 })
     else:
         return render(request, "ExamenesUnicauca/submit_contribution.html", {
             "teachers": teachers,
             "careers": careers,
-            "courses": courses
+            "courses": courses,
+            "semesters": range(1, 10)
         })
 
 
@@ -767,7 +771,8 @@ def contribution_view(request, contribution_id):
 
 
 def career_view(request, career_name):
-    courses = Course.objects.all()
+    career = Career.objects.get(name=career_name)
+    courses = Course.objects.filter(career=career)
     courses_per_semester = []
     courses_per_semester.append(len(courses.filter(semester=1)))
     courses_per_semester.append(len(courses.filter(semester=2)))

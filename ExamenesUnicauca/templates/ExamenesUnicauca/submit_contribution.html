@@ -1,320 +1,568 @@
-{% extends "ExamenesUnicauca/layout.html" %}
-{% load static %}
+{% extends "ExamenesUnicauca/layout.html" %} {% load static %} {% block body %}
 
-{% block body %}
-
-    <h2>Sube tu aporte. Es totalmente anónimo.</h2>
-    <hr>
-    {% if message %}
-        <div>
-            <p class="error_message">{{ message }}</p>
-        </div>
-    {% endif %}
-    <div class="form-group">
-        <p class="error_message">{{ form.category.errors }}</p>
-        <select class="form-control form-control-lg" id="category" required>
-            <option value="">Selecciona la categoría del aporte</option>
-            <option value="Parcial">Parcial</option>
-            <option value="Solucionario">Solucionario</option>
-            <option value="Apuntes">Apuntes</option>
-        </select>
-        <div class="invalid-feedback">Por favor escoge una opción.</div>
-    </div>
-    <form class="needs-validation" id="parcial-form" action="{% url 'submit_contribution' %}" method="post" enctype="multipart/form-data" novalidate>
-        {% csrf_token %}
-        <div class="form-group" style="display: none;">
-            <input class="form-control form-control-lg" required type="text" name="category" value="Parcial" readonly>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.career_name.errors }}</p>
-            <!-- <input class="form-control form-control-lg" required autofocus type="text" list="careers" name="career_name" placeholder="Nombre de la carrera" value="{{ form.career_name.value }}"> -->
-            <input class="form-control form-control-lg" required type="text" list="careers" name="career_name" placeholder="Nombre de la carrera" value="Ingeniería Electrónica" readonly>
-            <div class="invalid-feedback">Por favor introduzca una carrera válida.</div>
-            <datalist id="careers">
-                {% for career in careers %}
-                    <option value="{{ career.name }}">
-                {% empty %}
-                    <option value="">
-                {% endfor %}
-            </datalist>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.course.errors }}</p>
-            <input class="form-control form-control-lg" required type="text" list="courses" name="course_name" placeholder="Nombre de la materia" value="{{ form.course_name.value }}">
-            <div class="invalid-feedback">Por favor introduzca una materia válida.</div>
-            <datalist id="courses">
-                {% for course in courses %}
-                    <option value="{{ course.name }}">
-                {% empty %}
-                    <option value="">
-                {% endfor %}
-            </datalist>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.semester.errors }}</p>
-            <select class="form-control form-control-lg" required name="semester">
-                <option value="">Selecciona el semestre de la materia</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
-                <option>10</option>
-            </select>
-            <div class="invalid-feedback">Por favor escoge una opción</div>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.teacher_first_name.errors }}</p>
-            <input class="form-control form-control-lg" autofocus required type="text" list="teachers_first_name" name="teacher_first_name" placeholder="Nombre del profesor" value="{{ form.teacher_first_name.value }}">
-            <div class="invalid-feedback">Por favor introduzca un nombre válido.</div>
-            <datalist id="teachers_first_name">
-                {% for teacher in teachers %}
-                    <option value="{{ teacher.first_name }}">
-                {% empty %}
-                    <option value="">
-                {% endfor %}
-            </datalist>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.teacher_last_name.errors }}</p>
-            <input class="form-control form-control-lg" required type="text" list="teachers_last_name" name="teacher_last_name" placeholder="Apellido del profesor" value="{{ form.teacher_last_name.value }}">
-            <div class="invalid-feedback">Por favor introduzca un apellido válido.</div>
-            <datalist id="teachers_last_name">
-                {% for teacher in teachers %}
-                    <option value="{{ teacher.last_name }}">
-                {% empty %}
-                    <option value="">
-                {% endfor %}
-            </datalist>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.year.errors }}</p>
-            <input class="form-control form-control-lg" required type="number" name="year" placeholder="Año del parcial" value="{{ form.year.value }}" min="2000" max="2030">
-            <div class="invalid-feedback">Por favor introduzca un año válido.</div>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.semester_of_year.errors }}</p>
-            <select class="form-control form-control-lg" required name="semester_of_year">
-                <option value="">Selecciona el semestre del año</option>
-                <option value="1">Primera mitad</option>
-                <option value="2">Segunda mitad</option>
-            </select>
-            <div class="invalid-feedback">Por favor escoge una opción.</div>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.part.errors }}</p>
-            <select class="form-control form-control-lg" required name="part">
-                <option value="">Selecciona el corte del parcial</option>
-                <option value="1">Primer Corte</option>
-                <option value="2">Segundo Corte</option>
-                <option value="3">Tercer Corte</option>
-            </select>
-            <div class="invalid-feedback">Por favor escoge una opción.</div>
-        </div>
-        <div class="form-row images">
-            <div class="col-11">
-                <div class="form-group custom-file">
-                    <input type="file" class="custom-file-input customFile0" id="customFile0" required name="img[]" accept="image/*">
-                    <label class="custom-file-label customFileName0" for="customFile0">Carga una imágen de tu aporte</label>
-                    <div class="invalid-feedback">Por favor introduzca una imágen válida.</div>
-                </div>
-            </div>
-            <div class="col-1">
-                <span class="btn btn-primary add-field">+</span>
-            </div>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.description.errors }}</p>
-            <input class="form-control form-control-lg" type="text" name="description" placeholder="Descripción (No es obligatoria)" value="{{ form.description.value }}">
-        </div>
-        <input class="btn btn-primary btn-lg float-right" type="submit" value="Subir">
-    </form>
-    <form class="needs-validation" id="solution-form" action="{% url 'submit_contribution' %}" method="post" enctype="multipart/form-data" novalidate>
-        {% csrf_token %}
-        <div class="form-group" style="display: none;">
-            <input class="form-control form-control-lg" required type="text" name="category" value="Solucionario" readonly>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.career_name.errors }}</p>
-            <!-- <input class="form-control form-control-lg" required autofocus type="text" list="careers" name="career_name" placeholder="Nombre de la carrera" value="{{ form.career_name.value }}"> -->
-            <input class="form-control form-control-lg refresh-contributions" required type="text" list="careers" name="career_name" placeholder="Nombre de la carrera" value="Ingeniería Electrónica" id="career_name" readonly>
-            <div class="invalid-feedback">Por favor introduzca una carrera válida.</div>
-            <datalist id="careers">
-                {% for career in careers %}
-                    <option>{{ career.name }}</option>
-                {% empty %}
-                    <option value="">
-                {% endfor %}
-            </datalist>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.course.errors }}</p>
-            <select class="refresh-contributions form-control form-control-lg" required type="text" name="course_name" placeholder="Nombre de la materia" value="{{ form.course_name.value }}" id="course_name">
-                <option value="">Selecciona el curso</option>
-                {% for course in courses %}
-                    <option>{{ course.name }}</option>
-                {% endfor %}
-            </select>
-            <div class="invalid-feedback">Por favor escoge una opción.</div>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.teacher_first_name.errors }}</p>
-            <select class="refresh-contributions form-control form-control-lg" autofocus required type="text" name="teacher_first_name" placeholder="Nombre del profesor" value="{{ form.teacher_first_name.value }}" id="teacher_first_name">
-                <option value="">Selecciona el nombre del profesor</option>
-                {% for teacher in teachers %}
-                    <option>{{ teacher.first_name }}</option>
-                {% endfor %}
-            </select>
-            <div class="invalid-feedback">Por favor escoge una opción.</div>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.teacher_last_name.errors }}</p>
-            <select class="refresh-contributions form-control form-control-lg" required type="text" name="teacher_last_name" placeholder="Apellido del profesor" value="{{ form.teacher_last_name.value }}" id="teacher_last_name">
-                <option value="">Selecciona el apellido del profesor</option>
-                {% for teacher in teachers %}
-                    <option>{{ teacher.last_name }}</option>
-                {% endfor %}
-            </select>
-            <div class="invalid-feedback">Por favor escoge una opción.</div>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.solution.errors }}</p>
-            <select class="form-control form-control-lg" required name="solution" id="contribution">
-                <option value="">Selecciona el parcial del solucionario</option>
-            </select>
-            <div class="invalid-feedback">Por favor escoge una opción</div>
-        </div>
-        <div class="form-row images">
-            <div class="col-11">
-                <div class="form-group custom-file">
-                    <input type="file" class="custom-file-input customFile0" required name="img[]" accept="image/*">
-                    <label class="custom-file-label" for="customFile0" id="customFileName0">Carga una imágen de tu aporte</label>
-                    <div class="invalid-feedback">Por favor introduzca una imágen válida.</div>
-                </div>
-            </div>
-            <div class="col-1">
-                <span class="btn btn-primary add-field">+</span>
-            </div>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.description.errors }}</p>
-            <input class="form-control form-control-lg" type="text" name="description" placeholder="Descripción (No es obligatoria)" value="{{ form.description.value }}">
-        </div>
-        <input class="btn btn-primary btn-lg float-right" type="submit" value="Subir">
-    </form>
-    <form class="needs-validation" id="note-form" action="{% url 'submit_contribution' %}" method="post" enctype="multipart/form-data" novalidate>
-        {% csrf_token %}
-        <div class="form-group" style="display: none;">
-            <input class="form-control form-control-lg" required type="text" name="category" value="Apuntes" readonly>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.career_name.errors }}</p>
-            <!-- <input class="form-control form-control-lg" required autofocus type="text" list="careers" name="career_name" placeholder="Nombre de la carrera" value="{{ form.career_name.value }}"> -->
-            <input class="form-control form-control-lg" required type="text" list="careers" name="career_name" placeholder="Nombre de la carrera" value="Ingeniería Electrónica" readonly>
-            <div class="invalid-feedback">Por favor introduzca una carrera válida.</div>
-            <datalist id="careers">
-                {% for career in careers %}
-                    <option value="{{ career.name }}">
-                {% empty %}
-                    <option value="">
-                {% endfor %}
-            </datalist>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.course.errors }}</p>
-            <input class="form-control form-control-lg" required type="text" list="courses" name="course_name" placeholder="Nombre de la materia" value="{{ form.course_name.value }}">
-            <div class="invalid-feedback">Por favor introduzca una materia válida.</div>
-            <datalist id="courses">
-                {% for course in courses %}
-                    <option value="{{ course.name }}">
-                {% empty %}
-                    <option value="">
-                {% endfor %}
-            </datalist>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.semester.errors }}</p>
-            <select class="form-control form-control-lg" required name="semester">
-                <option value="">Selecciona el semestre de la materia</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
-                <option>10</option>
-            </select>
-            <div class="invalid-feedback">Por favor escoge una opción</div>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.teacher_first_name.errors }}</p>
-            <input class="form-control form-control-lg" autofocus required type="text" list="teachers_first_name" name="teacher_first_name" placeholder="Nombre del profesor" value="{{ form.teacher_first_name.value }}">
-            <div class="invalid-feedback">Por favor introduzca un nombre válido.</div>
-            <datalist id="teachers_first_name">
-                {% for teacher in teachers %}
-                    <option value="{{ teacher.first_name }}">
-                {% empty %}
-                    <option value="">
-                {% endfor %}
-            </datalist>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.teacher_last_name.errors }}</p>
-            <input class="form-control form-control-lg" required type="text" list="teachers_last_name" name="teacher_last_name" placeholder="Apellido del profesor" value="{{ form.teacher_last_name.value }}">
-            <div class="invalid-feedback">Por favor introduzca un apellido válido.</div>
-            <datalist id="teachers_last_name">
-                {% for teacher in teachers %}
-                    <option value="{{ teacher.last_name }}">
-                {% empty %}
-                    <option value="">
-                {% endfor %}
-            </datalist>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.topic.errors }}</p>
-            <input class="form-control form-control-lg" required type="text" name="topic" placeholder="Temática" value="{{ form.topic.value }}">
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.year.errors }}</p>
-            <input class="form-control form-control-lg" required type="number" name="year" placeholder="Año de los apuntes" value="{{ form.year.value }}" min="2000" max="2030">
-            <div class="invalid-feedback">Por favor introduzca un año válido.</div>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.semester_of_year.errors }}</p>
-            <select class="form-control form-control-lg" required name="semester_of_year">
-                <option value="">Selecciona el semestre del año</option>
-                <option value="1">Primera mitad</option>
-                <option value="2">Segunda mitad</option>
-            </select>
-            <div class="invalid-feedback">Por favor escoge una opción.</div>
-        </div>
-        <div class="form-row images">
-            <div class="col-11">
-                <div class="form-group custom-file">
-                    <input type="file" class="custom-file-input customFile0" id="customFile0" required name="img[]" accept="image/*">
-                    <label class="custom-file-label customFileName0" for="customFile0">Carga una imágen de tu aporte</label>
-                    <div class="invalid-feedback">Por favor introduzca una imágen válida.</div>
-                </div>
-            </div>
-            <div class="col-1">
-                <span class="btn btn-primary add-field">+</span>
-            </div>
-        </div>
-        <div class="form-group">
-            <p class="error_message">{{ form.description.errors }}</p>
-            <input class="form-control form-control-lg" type="text" name="description" placeholder="Descripción (No es obligatoria)" value="{{ form.description.value }}">
-        </div>
-        <input class="btn btn-primary btn-lg float-right" type="submit" value="Subir">
-    </form>
-    <br>
-{% endblock %}
-{% block script %}
-    <script src="{% static 'ExamenesUnicauca/js/contribution.js' %}"></script>
+<h2>Sube tu aporte. Es totalmente anónimo.</h2>
+<hr />
+{% if message %}
+<div>
+	<p class="error_message">{{ message }}</p>
+</div>
+{% endif %}
+<div class="form-group">
+	<p class="error_message">{{ form.category.errors }}</p>
+	<select class="form-control form-control-lg" id="category" required>
+		<option value="">Selecciona la categoría del aporte</option>
+		<option value="Parcial">Parcial</option>
+		<option value="Solucionario">Solucionario</option>
+		<option value="Apuntes">Apuntes</option>
+	</select>
+	<div class="invalid-feedback">Por favor escoge una opción.</div>
+</div>
+<form
+	class="needs-validation"
+	id="parcial-form"
+	action="{% url 'submit_contribution' %}"
+	method="post"
+	enctype="multipart/form-data"
+	novalidate
+>
+	{% csrf_token %}
+	<div class="form-group" style="display: none">
+		<input
+			class="form-control form-control-lg"
+			required
+			type="text"
+			name="category"
+			value="Parcial"
+			readonly
+		/>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.career_name.errors }}</p>
+		<input
+			class="form-control form-control-lg"
+			required
+			autofocus
+			type="text"
+			list="careers"
+			name="career_name"
+			placeholder="Nombre de la carrera"
+			value="{{ form.career_name.value }}"
+		/>
+		<div class="invalid-feedback">
+			Por favor introduzca una carrera válida.
+		</div>
+		<datalist id="careers">
+			{% for career in careers %}
+			<option value="{{ career.name }}" />
+			{% empty %}
+			<option value="" />
+			{% endfor %}
+		</datalist>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.course.errors }}</p>
+		<input
+			class="form-control form-control-lg"
+			required
+			type="text"
+			list="courses"
+			name="course_name"
+			placeholder="Nombre de la materia"
+			value="{{ form.course_name.value }}"
+		/>
+		<div class="invalid-feedback">
+			Por favor introduzca una materia válida.
+		</div>
+		<datalist id="courses">
+			{% for course in courses %}
+			<option value="{{ course.name }}" />
+			{% empty %}
+			<option value="" />
+			{% endfor %}
+		</datalist>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.semester.errors }}</p>
+		<select class="form-control form-control-lg" required name="semester">
+			<option value="">Selecciona el semestre de la materia</option>
+			{% for opt in semesters %}
+			<option>{{ opt }}</option>
+			{% endfor %}
+		</select>
+		<div class="invalid-feedback">Por favor escoge una opción</div>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.teacher_first_name.errors }}</p>
+		<input
+			class="form-control form-control-lg"
+			autofocus
+			required
+			type="text"
+			list="teachers_first_name"
+			name="teacher_first_name"
+			placeholder="Nombre del profesor"
+			value="{{ form.teacher_first_name.value }}"
+		/>
+		<div class="invalid-feedback">
+			Por favor introduzca un nombre válido.
+		</div>
+		<datalist id="teachers_first_name">
+			{% for teacher in teachers %}
+			<option value="{{ teacher.first_name }}" />
+			{% empty %}
+			<option value="" />
+			{% endfor %}
+		</datalist>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.teacher_last_name.errors }}</p>
+		<input
+			class="form-control form-control-lg"
+			required
+			type="text"
+			list="teachers_last_name"
+			name="teacher_last_name"
+			placeholder="Apellido del profesor"
+			value="{{ form.teacher_last_name.value }}"
+		/>
+		<div class="invalid-feedback">
+			Por favor introduzca un apellido válido.
+		</div>
+		<datalist id="teachers_last_name">
+			{% for teacher in teachers %}
+			<option value="{{ teacher.last_name }}" />
+			{% empty %}
+			<option value="" />
+			{% endfor %}
+		</datalist>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.year.errors }}</p>
+		<input
+			class="form-control form-control-lg"
+			required
+			type="number"
+			name="year"
+			placeholder="Año del parcial"
+			value="{{ form.year.value }}"
+			min="2000"
+			max="2030"
+		/>
+		<div class="invalid-feedback">Por favor introduzca un año válido.</div>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.semester_of_year.errors }}</p>
+		<select
+			class="form-control form-control-lg"
+			required
+			name="semester_of_year"
+		>
+			<option value="">Selecciona el semestre del año</option>
+			<option value="1">Primera mitad</option>
+			<option value="2">Segunda mitad</option>
+		</select>
+		<div class="invalid-feedback">Por favor escoge una opción.</div>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.part.errors }}</p>
+		<select class="form-control form-control-lg" required name="part">
+			<option value="">Selecciona el corte del parcial</option>
+			<option value="1">Primer Corte</option>
+			<option value="2">Segundo Corte</option>
+			<option value="3">Tercer Corte</option>
+		</select>
+		<div class="invalid-feedback">Por favor escoge una opción.</div>
+	</div>
+	<div class="form-row images">
+		<div class="col-11">
+			<div class="form-group custom-file">
+				<input
+					type="file"
+					class="custom-file-input customFile0"
+					id="customFile0"
+					required
+					name="img[]"
+					accept="image/*"
+				/>
+				<label
+					class="custom-file-label customFileName0"
+					for="customFile0"
+					>Carga una imágen de tu aporte</label
+				>
+				<div class="invalid-feedback">
+					Por favor introduzca una imágen válida.
+				</div>
+			</div>
+		</div>
+		<div class="col-1">
+			<span class="btn btn-primary add-field">+</span>
+		</div>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.description.errors }}</p>
+		<input
+			class="form-control form-control-lg"
+			type="text"
+			name="description"
+			placeholder="Descripción (No es obligatoria)"
+			value="{{ form.description.value }}"
+		/>
+	</div>
+	<input
+		class="btn btn-primary btn-lg float-right"
+		type="submit"
+		value="Subir"
+	/>
+</form>
+<form
+	class="needs-validation"
+	id="solution-form"
+	action="{% url 'submit_contribution' %}"
+	method="post"
+	enctype="multipart/form-data"
+	novalidate
+>
+	{% csrf_token %}
+	<div class="form-group" style="display: none">
+		<input
+			class="form-control form-control-lg"
+			required
+			type="text"
+			name="category"
+			value="Solucionario"
+			readonly
+		/>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.career_name.errors }}</p>
+		<input
+			class="form-control form-control-lg"
+			required
+			autofocus
+			type="text"
+			list="careers"
+			name="career_name"
+			placeholder="Nombre de la carrera"
+			value="{{ form.career_name.value }}"
+		/>
+		<div class="invalid-feedback">
+			Por favor introduzca una carrera válida.
+		</div>
+		<datalist id="careers">
+			{% for career in careers %}
+			<option>{{ career.name }}</option>
+			{% empty %}
+			<option value="" />
+			{% endfor %}
+		</datalist>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.course.errors }}</p>
+		<select
+			class="refresh-contributions form-control form-control-lg"
+			required
+			type="text"
+			name="course_name"
+			placeholder="Nombre de la materia"
+			value="{{ form.course_name.value }}"
+			id="course_name"
+		>
+			<option value="">Selecciona el curso</option>
+			{% for course in courses %}
+			<option>{{ course.name }}</option>
+			{% endfor %}
+		</select>
+		<div class="invalid-feedback">Por favor escoge una opción.</div>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.teacher_first_name.errors }}</p>
+		<select
+			class="refresh-contributions form-control form-control-lg"
+			autofocus
+			required
+			type="text"
+			name="teacher_first_name"
+			placeholder="Nombre del profesor"
+			value="{{ form.teacher_first_name.value }}"
+			id="teacher_first_name"
+		>
+			<option value="">Selecciona el nombre del profesor</option>
+			{% for teacher in teachers %}
+			<option>{{ teacher.first_name }}</option>
+			{% endfor %}
+		</select>
+		<div class="invalid-feedback">Por favor escoge una opción.</div>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.teacher_last_name.errors }}</p>
+		<select
+			class="refresh-contributions form-control form-control-lg"
+			required
+			type="text"
+			name="teacher_last_name"
+			placeholder="Apellido del profesor"
+			value="{{ form.teacher_last_name.value }}"
+			id="teacher_last_name"
+		>
+			<option value="">Selecciona el apellido del profesor</option>
+			{% for teacher in teachers %}
+			<option>{{ teacher.last_name }}</option>
+			{% endfor %}
+		</select>
+		<div class="invalid-feedback">Por favor escoge una opción.</div>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.solution.errors }}</p>
+		<select
+			class="form-control form-control-lg"
+			required
+			name="solution"
+			id="contribution"
+		>
+			<option value="">Selecciona el parcial del solucionario</option>
+		</select>
+		<div class="invalid-feedback">Por favor escoge una opción</div>
+	</div>
+	<div class="form-row images">
+		<div class="col-11">
+			<div class="form-group custom-file">
+				<input
+					type="file"
+					class="custom-file-input customFile0"
+					required
+					name="img[]"
+					accept="image/*"
+				/>
+				<label
+					class="custom-file-label"
+					for="customFile0"
+					id="customFileName0"
+					>Carga una imágen de tu aporte</label
+				>
+				<div class="invalid-feedback">
+					Por favor introduzca una imágen válida.
+				</div>
+			</div>
+		</div>
+		<div class="col-1">
+			<span class="btn btn-primary add-field">+</span>
+		</div>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.description.errors }}</p>
+		<input
+			class="form-control form-control-lg"
+			type="text"
+			name="description"
+			placeholder="Descripción (No es obligatoria)"
+			value="{{ form.description.value }}"
+		/>
+	</div>
+	<input
+		class="btn btn-primary btn-lg float-right"
+		type="submit"
+		value="Subir"
+	/>
+</form>
+<form
+	class="needs-validation"
+	id="note-form"
+	action="{% url 'submit_contribution' %}"
+	method="post"
+	enctype="multipart/form-data"
+	novalidate
+>
+	{% csrf_token %}
+	<div class="form-group" style="display: none">
+		<input
+			class="form-control form-control-lg"
+			required
+			type="text"
+			name="category"
+			value="Apuntes"
+			readonly
+		/>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.career_name.errors }}</p>
+		<input
+			class="form-control form-control-lg"
+			required
+			autofocus
+			type="text"
+			list="careers"
+			name="career_name"
+			placeholder="Nombre de la carrera"
+			value="{{ form.career_name.value }}"
+		/>
+		<div class="invalid-feedback">
+			Por favor introduzca una carrera válida.
+		</div>
+		<datalist id="careers">
+			{% for career in careers %}
+			<option value="{{ career.name }}" />
+			{% empty %}
+			<option value="" />
+			{% endfor %}
+		</datalist>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.course.errors }}</p>
+		<input
+			class="form-control form-control-lg"
+			required
+			type="text"
+			list="courses"
+			name="course_name"
+			placeholder="Nombre de la materia"
+			value="{{ form.course_name.value }}"
+		/>
+		<div class="invalid-feedback">
+			Por favor introduzca una materia válida.
+		</div>
+		<datalist id="courses">
+			{% for course in courses %}
+			<option value="{{ course.name }}" />
+			{% empty %}
+			<option value="" />
+			{% endfor %}
+		</datalist>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.semester.errors }}</p>
+		<select class="form-control form-control-lg" required name="semester">
+			<option value="">Selecciona el semestre de la materia</option>
+			{% for opt in semesters %}
+			<option>{{ opt }}</option>
+			{% endfor %}
+		</select>
+		<div class="invalid-feedback">Por favor escoge una opción</div>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.teacher_first_name.errors }}</p>
+		<input
+			class="form-control form-control-lg"
+			autofocus
+			required
+			type="text"
+			list="teachers_first_name"
+			name="teacher_first_name"
+			placeholder="Nombre del profesor"
+			value="{{ form.teacher_first_name.value }}"
+		/>
+		<div class="invalid-feedback">
+			Por favor introduzca un nombre válido.
+		</div>
+		<datalist id="teachers_first_name">
+			{% for teacher in teachers %}
+			<option value="{{ teacher.first_name }}" />
+			{% empty %}
+			<option value="" />
+			{% endfor %}
+		</datalist>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.teacher_last_name.errors }}</p>
+		<input
+			class="form-control form-control-lg"
+			required
+			type="text"
+			list="teachers_last_name"
+			name="teacher_last_name"
+			placeholder="Apellido del profesor"
+			value="{{ form.teacher_last_name.value }}"
+		/>
+		<div class="invalid-feedback">
+			Por favor introduzca un apellido válido.
+		</div>
+		<datalist id="teachers_last_name">
+			{% for teacher in teachers %}
+			<option value="{{ teacher.last_name }}" />
+			{% empty %}
+			<option value="" />
+			{% endfor %}
+		</datalist>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.topic.errors }}</p>
+		<input
+			class="form-control form-control-lg"
+			required
+			type="text"
+			name="topic"
+			placeholder="Temática"
+			value="{{ form.topic.value }}"
+		/>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.year.errors }}</p>
+		<input
+			class="form-control form-control-lg"
+			required
+			type="number"
+			name="year"
+			placeholder="Año de los apuntes"
+			value="{{ form.year.value }}"
+			min="2000"
+			max="2030"
+		/>
+		<div class="invalid-feedback">Por favor introduzca un año válido.</div>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.semester_of_year.errors }}</p>
+		<select
+			class="form-control form-control-lg"
+			required
+			name="semester_of_year"
+		>
+			<option value="">Selecciona el semestre del año</option>
+			<option value="1">Primera mitad</option>
+			<option value="2">Segunda mitad</option>
+		</select>
+		<div class="invalid-feedback">Por favor escoge una opción.</div>
+	</div>
+	<div class="form-row images">
+		<div class="col-11">
+			<div class="form-group custom-file">
+				<input
+					type="file"
+					class="custom-file-input customFile0"
+					id="customFile0"
+					required
+					name="img[]"
+					accept="image/*"
+				/>
+				<label
+					class="custom-file-label customFileName0"
+					for="customFile0"
+					>Carga una imágen de tu aporte</label
+				>
+				<div class="invalid-feedback">
+					Por favor introduzca una imágen válida.
+				</div>
+			</div>
+		</div>
+		<div class="col-1">
+			<span class="btn btn-primary add-field">+</span>
+		</div>
+	</div>
+	<div class="form-group">
+		<p class="error_message">{{ form.description.errors }}</p>
+		<input
+			class="form-control form-control-lg"
+			type="text"
+			name="description"
+			placeholder="Descripción (No es obligatoria)"
+			value="{{ form.description.value }}"
+		/>
+	</div>
+	<input
+		class="btn btn-primary btn-lg float-right"
+		type="submit"
+		value="Subir"
+	/>
+</form>
+<br />
+{% endblock %} {% block script %}
+<script src="{% static 'ExamenesUnicauca/js/contribution.js' %}"></script>
 {% endblock %}
