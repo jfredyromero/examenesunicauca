@@ -104,15 +104,16 @@ def getContributionsPage(request, all_contributions):
         contributions = paginator.page(1)
     except EmptyPage:
         contributions = paginator.page(paginator.num_pages)
-    return contributions
-
+    page_range = contributions.paginator.get_elided_page_range(number=pag_index, on_each_side=2, on_ends=1)
+    return contributions, page_range
 
 def index(request):
     contributions = Contribution.objects.filter(
         status=True).order_by("id").reverse()
-    contributions = getContributionsPage(request, contributions)
+    contributions, page_range = getContributionsPage(request, contributions)
     return render(request, "ExamenesUnicauca/index.html", {
         "contributions": contributions,
+        "page_range": page_range,
         "title": "Inicio"
     })
 
@@ -121,9 +122,10 @@ def index(request):
 def moderate(request):
     contributions = Contribution.objects.filter(
         status=False).order_by("id").reverse()
-    contributions = getContributionsPage(request, contributions)
+    contributions, page_range = getContributionsPage(request, contributions)
     return render(request, "ExamenesUnicauca/moderate.html", {
         "contributions": contributions,
+        "page_range": page_range,
         "title": "Moderar"
     })
 
@@ -141,17 +143,19 @@ def search(request, search_in):
                      Contribution.objects.filter(teacher__first_name__icontains=query, status=status) |
                      Contribution.objects.filter(teacher__last_name__icontains=query, status=status) |
                      Contribution.objects.filter(year__icontains=query, status=status)).order_by("id").reverse()
-    contributions = getContributionsPage(request, contributions)
+    contributions, page_range = getContributionsPage(request, contributions)
     title = f'Resultados: "{query}"'
     if status:
         return render(request, "ExamenesUnicauca/index.html", {
             "contributions": contributions,
+            "page_range": page_range,
             "title": title,
             "query": query
         })
     else:
         return render(request, "ExamenesUnicauca/moderate.html", {
             "contributions": contributions,
+            "page_range": page_range,
             "title": title,
             "query": query
         })
@@ -809,9 +813,10 @@ def course_view(request, course_name, teacher_name):
     course = final_teacher.courses_of_teacher.get(name=course_name)
     contributions = Contribution.objects.filter(
         teacher=final_teacher, course=course).order_by("id").reverse()
-    contributions = getContributionsPage(request, contributions)
+    contributions, page_range = getContributionsPage(request, contributions)
     return render(request, "ExamenesUnicauca/index.html", {
         "contributions": contributions,
+        "page_range": page_range,
         "title": course_name
     })
 
