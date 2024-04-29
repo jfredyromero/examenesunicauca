@@ -83,6 +83,42 @@
 						>
 							Ingeniería de Sistemas
 						</a>
+						<a
+							class="dropdown-item"
+							href="{% url 'career_view' 'Ingeniería Automática' %}"
+						>
+							Ingeniería Automática
+						</a>
+						<a
+							class="dropdown-item"
+							href="{% url 'career_view' 'Ingeniería Civil' %}"
+						>
+							Ingeniería Civil
+						</a>
+						<a
+							class="dropdown-item"
+							href="{% url 'career_view' 'Ingeniería Ambiental' %}"
+						>
+							Ingeniería Ambiental
+						</a>
+						<a
+							class="dropdown-item"
+							href="{% url 'career_view' 'Ingeniería Física' %}"
+						>
+							Ingeniería Física
+						</a>
+						<a
+							class="dropdown-item"
+							href="{% url 'career_view' 'Derecho' %}"
+						>
+							Derecho
+						</a>
+						<a
+							class="dropdown-item"
+							href="{% url 'career_view' 'Medicina' %}"
+						>
+							Medicina
+						</a>
 					</div>
 					<a class="nav-link" href="http://www.unicauca.edu.co/">
 						Unicauca Web
@@ -168,6 +204,38 @@
 									Ingeniería de Sistemas
 								</a>
 								<span></span>
+								<a
+									href="{% url 'career_view' 'Ingeniería Automática' %}"
+								>
+									Ingeniería Automática
+								</a>
+								<span></span>
+								<a
+									href="{% url 'career_view' 'Ingeniería Civil' %}"
+								>
+									Ingeniería Civil
+								</a>
+								<span></span>
+								<a
+									href="{% url 'career_view' 'Ingeniería Ambiental' %}"
+								>
+									Ingeniería Ambiental
+								</a>
+								<span></span>
+								<a
+									href="{% url 'career_view' 'Ingeniería Física' %}"
+								>
+									Ingeniería Física
+								</a>
+								<span></span>
+								<a href="{% url 'career_view' 'Derecho' %}">
+									Derecho
+								</a>
+								<span></span>
+								<a href="{% url 'career_view' 'Medicina' %}">
+									Medicina
+								</a>
+								<span></span>
 							</li>
 						</ul>
 					</li>
@@ -186,7 +254,36 @@
 			</div>
 		</div>
 		<div id="home">
-			<div id="page-content">{% block body %} {% endblock %}</div>
+			<div id="page-content">
+				<div
+					id="alert-banner"
+					class="alert alert-success alert-dismissible fade show"
+					role="alert"
+				>
+					<button
+						type="button"
+						class="close"
+						data-dismiss="alert"
+						aria-label="Close"
+						onclick="$('.alert').alert('close')"
+					>
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="alert-heading">Agrega tu carrera!</h4>
+					<p class="mb-0 lh-sm">
+						Estamos expandiendonos y ahora existe la posibilidad de
+						agregar tu carrera a nuestra base de datos!
+					</p>
+					<hr />
+					<p class="mb-0 lh-sm">
+						Ponte en contacto con los administradores a través de
+						<a href="mailto:examenesunicauca@gmail.com">
+							examenesunicauca@gmail.com
+						</a>
+					</p>
+				</div>
+				{% block body %} {% endblock %}
+			</div>
 			<div id="footer">
 				<div id="footer-logo">
 					<a href="{% url 'index' %}">
