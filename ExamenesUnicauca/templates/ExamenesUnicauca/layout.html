@@ -6,6 +6,32 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="¿Eres estudiante de la Universidad del Cauca?
+			¿Se te conflictúa conseguir exámenes de semestres pasados?
+			Aquí está la solución a tus problemas. En el anonimáto todos somos iguales.
+			La web Examenes Unicauca da libre acceso a todos los parciales resueltos y almacenados por estudiantes de semestres pasados."
+		/>
+		<meta name="robots" content="index, follow" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="Exámenes Unicauca" />
+		<meta
+			property="og:description"
+			content="¿Eres estudiante de la Universidad del Cauca?
+			¿Se te conflictúa conseguir exámenes de semestres pasados?
+			Aquí está la solución a tus problemas. En el anonimáto todos somos iguales.
+			La web Examenes Unicauca da libre acceso a todos los parciales resueltos y almacenados por estudiantes de semestres pasados."
+		/>
+		<meta
+			property="og:image"
+			content="{% static 'ExamenesUnicauca/img/logo.png' %}"
+		/>
+		<meta property="og:url" content="permalink" />
+		<link
+			rel="canonical"
+			href="https://examenesunicauca.pythonanywhere.com"
+		/>
 		<link rel="preconnect" href="https://fonts.gstatic.com" />
 		<link
 			href="https://fonts.googleapis.com/css2?family=Kiwi+Maru&display=swap"
@@ -44,7 +70,7 @@
 			type="image/png"
 			href="{% static 'ExamenesUnicauca/img/favicon.png' %}"
 		/>
-		<title>{% block title %} Examenes Unicauca {% endblock %}</title>
+		<title>{% block title %} Exámenes Unicauca {% endblock %}</title>
 	</head>
 	<body background="{% static 'ExamenesUnicauca/img/background.jpg' %}">
 		<div class="header">
