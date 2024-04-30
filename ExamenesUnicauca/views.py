@@ -108,12 +108,16 @@ def getContributionsPage(request, all_contributions):
     return contributions, page_range
 
 def index(request):
+    thanks = request.GET.get("thanks", False)
+    if thanks:
+        thanks = True
     contributions = Contribution.objects.filter(
         status=True).order_by("id").reverse()
     contributions, page_range = getContributionsPage(request, contributions)
     return render(request, "ExamenesUnicauca/index.html", {
         "contributions": contributions,
         "page_range": page_range,
+        "thanks": thanks,
         "title": "Inicio"
     })
 
@@ -223,8 +227,9 @@ def submit_contribution(request):
                     contribution_img = ContributionImage(img=image)
                     contribution_img.save()
                     contribution.images.add(contribution_img)
-                    contribution.save()
-                return HttpResponseRedirect(reverse("index"))
+                    contribution.save()    
+                redirect_url = reverse('index')                    
+                return HttpResponseRedirect(f'{redirect_url}?thanks=true')
             else:
                 return render(request, "ExamenesUnicauca/submit_contribution.html", {
                     "form": form,
@@ -381,7 +386,7 @@ def submit_contribution(request):
             "teachers": teachers,
             "careers": careers,
             "courses": courses,
-            "semesters": range(1, 10)
+            "semesters": range(1, 11)
         })
 
 

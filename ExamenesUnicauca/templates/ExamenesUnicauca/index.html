@@ -1,4 +1,12 @@
-{% extends "ExamenesUnicauca/layout.html" %} {% block body %}
+{% extends "ExamenesUnicauca/layout.html" %} {% block body %} {% if thanks %}
+<div id="alert-banner" class="alert alert-success" role="alert">
+	<h4 class="alert-heading">Gracias por tus aportes!</h4>
+	<p class="mb-0 lh-sm">
+		Tus aportes nos ayudan a seguir creciendo. Tu aporte ahora mismo está en
+		cola de revisión y será aprobado o rechazado en las próximas 2 semanas.
+	</p>
+</div>
+{% endif %}
 <div class="row">
 	<div class="col-6">
 		<h2>{{ title }}</h2>
